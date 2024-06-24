@@ -13,27 +13,77 @@ public class TankPawn : Pawn
     // Update is called once per frame
     public override void Update()
     {
-        base.Start();
+        base.Update();
+        ShootingTimerLogic();
     }
 
     public override void MoveForward()
     {
-        Debug.Log("Move Forward");
+        if(mover != null) 
+        { 
+            mover.Move(transform.forward, moveSpeed);
+        }
+        else
+        {
+            Debug.LogWarning("Warning: No Mover in TankPawn.MoveForward()!");
+        }        
     }
 
     public override void MoveBackward()
     {
-        Debug.Log("Move Backward");
+        if (mover != null)
+        {
+            mover.Move(transform.forward, -moveSpeed);
+        }
+        else
+        {
+            Debug.LogWarning("Warning: No Mover in TankPawn.MoveBackward()!");
+        }
     }
 
     public override void RotateClockwise()
     {
-        Debug.Log("Rotate Clockwise");
+        if (mover != null)
+        {
+            mover.Rotate(turnSpeed);
+        }
+        else
+        {
+            Debug.LogWarning("Warning: No Mover in TankPawn.RotateClockwise()!");
+        }
     }
 
     public override void RotateCounterClockwise()
     {
-        Debug.Log("Rotate Counter-Clockwise");
+        if (mover != null)
+        {
+            mover.Rotate(-turnSpeed);
+        }
+        else
+        {
+            Debug.LogWarning("Warning: No Mover in TankPawn.RotateCounterClockwise()!");
+        }
     }
 
+    //Instantiations bullet when the shooting function is called
+    public override void Shooting()
+    {
+        if (canFire)
+        {
+            Instantiate(bullet, firePoint.position, firePoint.rotation);
+            fireCounter = 0;
+            canFire = false;
+        }
+    }
+
+    //Logic that controls the shooting cooldown for the player using a boolean
+    private void ShootingTimerLogic()
+    {
+        fireCounter += Time.deltaTime;
+
+        if (fireCounter > fireRate)
+        {
+            canFire = true;
+        }
+    }
 }
