@@ -14,7 +14,6 @@ public class TankPawn : Pawn
     public override void Update()
     {
         base.Update();
-        ShootingTimerLogic();
     }
 
     public override void MoveForward()
@@ -65,25 +64,8 @@ public class TankPawn : Pawn
         }
     }
 
-    //Instantiations bullet when the shooting function is called
-    public override void Shooting()
+    public override void Shoot()
     {
-        if (canFire)
-        {
-            Instantiate(bullet, firePoint.position, firePoint.rotation);
-            fireCounter = 0;
-            canFire = false;
-        }
-    }
-
-    //Logic that controls the shooting cooldown for the player using a boolean
-    private void ShootingTimerLogic()
-    {
-        fireCounter += Time.deltaTime;
-
-        if (fireCounter > fireRate)
-        {
-            canFire = true;
-        }
+        shooter.Shoot(shellPrefab, fireForce, damageDone, shellLifespan);
     }
 }

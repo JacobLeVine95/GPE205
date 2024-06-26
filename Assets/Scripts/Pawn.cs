@@ -4,38 +4,43 @@ using UnityEngine;
 
 public abstract class Pawn : MonoBehaviour
 {
-    [Header("Player Movement")]
+    [Header("Player Movement options")]
     // Variable for move speed
     public float moveSpeed;
     // Variable for turn speed
     public float turnSpeed;
-    //Variable to hold our Mover
+    // Variable to hold our Mover
     public Mover mover;
 
-    [Header("Shooting Logic")]
-    // Variable for Rate of Fire
-    public float fireRate;
-    public float fireCounter;
-    public bool canFire = true;
-
-    //Firepoint Transform
-    public Transform firePoint;
-    public GameObject bullet;
+    [Header("Shooting Options")]
+    // Variable for our firing force
+    public float fireForce;
+    // Variable for our damage done
+    public float damageDone;
+    // Variable for our shell prefab
+    public GameObject shellPrefab;
+    // Variable for how long our bullets survive if they don't collide
+    public float shellLifespan;
+    // Variable to hold our Shooter
+    public Shooter shooter;
 
     // Start is called before the first frame update
     public virtual void Start()
     {
         mover = GetComponent<Mover>();
+        shooter = GetComponent<Shooter>();
     }
 
     // Update is called once per frame
     public virtual void Update()
     {
+
     }
     
     public abstract void MoveForward();
     public abstract void MoveBackward();
     public abstract void RotateClockwise();
     public abstract void RotateCounterClockwise();
-    public abstract void Shooting();
+    public abstract void Shoot();
+
 }
