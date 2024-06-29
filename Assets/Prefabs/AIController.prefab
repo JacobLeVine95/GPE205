@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8379984359563001659}
   - component: {fileID: 3495067353358348640}
+  - component: {fileID: 4781616321348292561}
   m_Layer: 0
   m_Name: AIController
   m_TagString: Untagged
@@ -39,17 +40,41 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7515640255317962016}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e962b595952dede4a998ee3efcdd2597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pawn: {fileID: 0}
-  currentState: 0
-  target: {fileID: 0}
+  player: {fileID: 0}
+  targetDistance: 10
+  fleeDistance: 1
   waypoints:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   waypointStopDistance: 2
+--- !u!114 &4781616321348292561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7515640255317962016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99a3ed1dbeaab3c47a687c122f1720e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pawn: {fileID: 0}
+  player: {fileID: 0}
+  targetDistance: 10
+  fleeDistance: 1
+  waypoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  waypointStopDistance: 2
+  currentState: 0

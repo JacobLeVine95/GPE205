@@ -11,13 +11,13 @@ public class TankPawn : Pawn
     {
         // Responsible for indicating when we are allowed to shoot
         float secondsPerShot;
-        if (fireRate <= 0)
+        if (shooter.fireRate <= 0)
         {
             secondsPerShot = Mathf.Infinity;
         }
         else
         {
-            secondsPerShot = 1 / fireRate;
+            secondsPerShot = 1 / shooter.fireRate;
         }
         timerDelay = secondsPerShot;
         nextEventTime = Time.time + timerDelay;
@@ -83,7 +83,7 @@ public class TankPawn : Pawn
     {
         if(Time.time >= nextEventTime)
         {
-            shooter.Shoot(shellPrefab, fireForce, damageDone, shellLifespan);
+            shooter.Shoot(shooter.shellPrefab, shooter.fireForce, shooter.damageDone, shooter.shellLifespan);
             nextEventTime = Time.time + timerDelay;
         }
     }
