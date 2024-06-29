@@ -13,15 +13,17 @@ public abstract class Pawn : MonoBehaviour
     public Mover mover;
 
     [Header("Shooting Options")]
-    // Variable for our firing force
+    // Variable for the firing force
     public float fireForce;
-    // Variable for our damage done
+    // Variable for the fire rate
+    public float fireRate;
+    // Variable for the damage done
     public float damageDone;
-    // Variable for our shell prefab
+    // Variable for the shell prefab
     public GameObject shellPrefab;
     // Variable for how long our bullets survive if they don't collide
     public float shellLifespan;
-    // Variable to hold our Shooter
+    // Variable to hold the Shooter function
     public Shooter shooter;
 
     // Start is called before the first frame update
@@ -42,5 +44,5 @@ public abstract class Pawn : MonoBehaviour
     public abstract void RotateClockwise();
     public abstract void RotateCounterClockwise();
     public abstract void Shoot();
-
+    public abstract void RotateTowards(Vector3 targetPosition);
 }

@@ -310,6 +310,7 @@ MonoBehaviour:
   turnSpeed: 140
   mover: {fileID: 207521923803638086}
   fireForce: 1000
+  fireRate: 3
   damageDone: 25
   shellPrefab: {fileID: 1431117313477545338, guid: 530cf04dced8f834fb89e50e44925b80, type: 3}
   shellLifespan: 10

@@ -15,16 +15,12 @@ public class GameManager : MonoBehaviour
     // List that holds our player(s)
     public List<PlayerController> players;
 
-    // Start is called before the first frame update
-    private void Start()
-    {
-        //Temp Code - for now, we spawn player as soon as the GameManager starts
-        SpawnPlayer(); 
-    }
-
     // Awake is called when the object is first created - before even Start can run!
     private void Awake()
     {
+        //Temp Code - for now, we spawn player as soon as the GameManager starts
+        SpawnPlayer();
+        
         // If the instance doesn't exist yet...
         if (instance == null)
         {
@@ -38,6 +34,7 @@ public class GameManager : MonoBehaviour
             // Otherwise, there is already an instance, so destroy this gameObject
             Destroy(gameObject);
         }
+
     }
     
     public void SpawnPlayer()
@@ -54,6 +51,8 @@ public class GameManager : MonoBehaviour
         
         //Hook them up!
         newController.pawn = newPawn;
+
+        Debug.Log("Player Spawned");
     }
 }
 

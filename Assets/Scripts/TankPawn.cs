@@ -4,9 +4,24 @@ using UnityEngine;
 
 public class TankPawn : Pawn
 {
+    private float nextEventTime;
+    private float timerDelay;
     // Start is called before the first frame update
     public override void Start()
     {
+        // Responsible for indicating when we are allowed to shoot
+        float secondsPerShot;
+        if (fireRate <= 0)
+        {
+            secondsPerShot = Mathf.Infinity;
+        }
+        else
+        {
+            secondsPerShot = 1 / fireRate;
+        }
+        timerDelay = secondsPerShot;
+        nextEventTime = Time.time + timerDelay;
+
         base.Start();
     }
 
@@ -66,6 +81,20 @@ public class TankPawn : Pawn
 
     public override void Shoot()
     {
-        shooter.Shoot(shellPrefab, fireForce, damageDone, shellLifespan);
+        if(Time.time >= nextEventTime)
+        {
+            shooter.Shoot(shellPrefab, fireForce, damageDone, shellLifespan);
+            nextEventTime = Time.time + timerDelay;
+        }
+    }
+
+    public override void RotateTowards(Vector3 targetPosition)
+    {
+        // Find the vector to our target
+        Vector3 vectorToTarget = targetPosition - transform.position;
+        //Find the rotation to look down that vector
+        Quaternion targetRotation = Quaternion.LookRotation(vectorToTarget, Vector3.up);
+        //Rotate closer to that vector, but don't rotate more than our turn speen allows in one frame
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
     }
 }

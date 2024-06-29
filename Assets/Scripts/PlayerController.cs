@@ -31,10 +31,13 @@ public class PlayerController : Controller
     // Update is called once per frame
     public override void Update()
     {
-        // Process our Keyboard Inputs
-        ProcessInputs();
-
-        // Run the Update() function from the parent (base) class
+        //Make Decisions
+        if (pawn != null)
+        {
+            // Check if pawn has been destroyed; only make decisions if not destroyed
+            ProcessInputs();
+        }
+        // Run the parent (base) update
         base.Update();
     }
 
