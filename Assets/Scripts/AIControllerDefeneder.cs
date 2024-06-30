@@ -10,6 +10,8 @@ public class AIControllerDefeneder : AIController
 
 
 
+
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -27,27 +29,23 @@ public class AIControllerDefeneder : AIController
         }
         switch (currentState)
         {
-            case AIState.Retreat:
-                // Do work for Guard
-                DoGuardState();
-                break;
-            case AIState.Alert:
-                Debug.Log("Started chasing player");
-                // Do work for Chase
-                DoChaseState();
-                break;
-            case AIState.Engage:
-                // Do work for Attack
-                DoAttackState();
-                break;
             case AIState.Patrol:
                 // Do work for Patrol
                 DoPatrolState();
                 break;
-            //case AIState.Retrea:
-            //    // Do work for Flee
-            //    DoFleeState();
-            //    break;
+            case AIState.Alert:
+                Debug.Log("Alerted to player");
+                // Do work for Alert
+                DoAlertState();
+                break;
+            case AIState.Engage:
+                // Do work for Engage
+                DoEngageState();
+                break;
+            case AIState.Retreat:
+                // Do work for Retreat
+                DoRetreatState();
+                break;
         }
     }
 
@@ -56,10 +54,11 @@ public class AIControllerDefeneder : AIController
     {
         // Check for transitions
 
-        if (IsDistanceLessThan(player, targetDistance))
+        if (IsDistanceLessThan(player, alertDistance))
         {
             Debug.Log("Player within distance");
             ChangeState(AIState.Alert);
+            return;
         }
         Debug.Log("Patrolling");
         // If we have enough waypoints in our list to move to a current waypoint
@@ -67,7 +66,7 @@ public class AIControllerDefeneder : AIController
         {
             Debug.Log("Moving to current waypoint");
             // Then seek that waypoint
-            Flee(waypoints[currentWaypoint].transform.position);
+            Chase(waypoints[currentWaypoint].gameObject);
             // If we are close enough, then increment to the next waypoint
             if (Vector3.Distance(pawn.transform.position, waypoints[currentWaypoint].position) < waypointStopDistance)
             {
@@ -87,33 +86,35 @@ public class AIControllerDefeneder : AIController
         currentWaypoint = 0;
     }
 
-    // Guard State
-    public void DoGuardState()
+    // Retreat State
+    public void DoRetreatState()
     {
         // Check for transitions
-        if (IsDistanceLessThan(player, targetDistance))
+        if (IsDistanceLessThan(player, dangerDistance))
         {
-            ChangeState(AIState.Alert);
+            ChangeState(AIState.Patrol);
         }
-        // Doing Guard State
-        Debug.Log("Guarding");
+        // Doing Retreat State
+        Debug.Log("Retreating");
+
+        Flee();
     }
 
-    // Chase State  
-    public void DoChaseState()
+    // Alert State  
+    public void DoAlertState()
     {
         // Check for transitions
-        if (IsDistanceLessThan(player, targetDistance))
-        {
-            ChangeState(AIState.Engage);
-            return;
-        }
-        else if (IsDistanceLessThan(player, targetDistance))
+        if (health.currentHealth <= 0)
         {
             ChangeState(AIState.Retreat);
             return;
         }
-        else if (IsDistanceLessThan(player, targetDistance))
+        else if (IsDistanceLessThan(player, engageDistance))
+        {
+            ChangeState(AIState.Engage);
+            return;
+        }
+        else if (!IsDistanceLessThan(player, alertDistance))
         {
             ChangeState(AIState.Patrol);
             return;
@@ -125,16 +126,20 @@ public class AIControllerDefeneder : AIController
     }
 
     // Attack State
-    public void DoAttackState()
+    public void DoEngageState()
     {
         // Check for transitions
-        if (IsDistanceLessThan(player, 7))
+        if (!CanEngage())
         {
-            ChangeState(AIState.Engage);
+            ChangeState(AIState.Alert);
             return;
         }
         // Chase
-        Chase(player);
+        if (!IsTooClose())
+        {
+            Chase(player);
+        }
+       
         // Shoot
         Shoot();
     }
@@ -142,20 +147,12 @@ public class AIControllerDefeneder : AIController
     // Flee State
     public void DoFleeState()
     {
-        if (IsDistanceLessThan(player, targetDistance))
+        if (!IsDistanceLessThan(player, dangerDistance))
         {
-            ChangeState(AIState.Retreat);
+            ChangeState(AIState.Patrol);
+            return;
         }
-        //Doing Flee State
-        Debug.Log("Fleeing");
-        // Find the vector to our target
-        Vector3 vectorToTarget = player.transform.position - pawn.transform.position;
-        // Find the vector away from our target
-        Vector3 vectorAwayFromTarget = -vectorToTarget;
-        // Find the direction and determines how far it runs away
-        Vector3 fleeVector = vectorAwayFromTarget.normalized * fleeDistance;
-
-        Flee(pawn.transform.position + fleeVector);
+        Flee();
     }
 
     public virtual void ChangeState(AIState State)

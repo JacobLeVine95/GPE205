@@ -4,13 +4,21 @@ using UnityEngine;
 
 public class AIController : Controller
 {
-   
+    public float alertDistance;
+
+    public float dangerDistance;
+
+    public float engageDistance;
+
+    public float strikeDistance;
+
+    public Health health;
+
+    public float lastKnownHealth;
 
     public GameObject player;
 
-    public float targetDistance;
-
-    public float fleeDistance;
+    
 
     protected float lastStateChangeTime;
 
@@ -23,9 +31,10 @@ public class AIController : Controller
     public override void Start()
     {
         FindPlayer();
+        FindHealth();
 
         //Run the parents (base) start
-        base.Start();  
+        base.Start();
     }
 
     // Update is called once per frame
@@ -47,7 +56,7 @@ public class AIController : Controller
     }
 
     
-    public void Flee (Vector3 fleeLocation)
+    public void Chase (Vector3 fleeLocation)
     {
         // RotateTowards the target
         pawn.RotateTowards(fleeLocation);
@@ -58,9 +67,22 @@ public class AIController : Controller
     public void Chase(GameObject Target)
     {
         // Seek the position of our target Transform
-        Flee(Target.transform.position);
+        Chase(Target.transform.position);
     }
+    
+    public void Flee()
+    {
+        //Doing Flee State
+        Debug.Log("Fleeing");
+        // Find the vector to our target
+        Vector3 vectorToTarget = player.transform.position - pawn.transform.position;
+        // Find the vector away from our target
+        Vector3 vectorAwayFromTarget = -vectorToTarget;
+        // Find the direction and determines how far it runs away
+        Vector3 fleeVector = vectorAwayFromTarget.normalized * dangerDistance;
 
+        Chase(pawn.transform.position + fleeVector);
+    }
 
     public void Shoot()
     {
@@ -81,8 +103,27 @@ public class AIController : Controller
         }
     }
 
+    protected bool CanEngage()
+    {
+        return IsDistanceLessThan(player, engageDistance);
+    }
 
+    protected bool CanStrike()
+    {
+        return IsDistanceLessThan(player, strikeDistance);
+    }
 
+    protected bool IsTooClose()
+    {
+        return IsDistanceLessThan(player, engageDistance / 2);
+    }
+
+    protected bool TookDamage()
+    {
+        bool tookDamage = lastKnownHealth == health.currentHealth;
+        lastKnownHealth = health.currentHealth;
+        return tookDamage;
+    }
     public void FindPlayer()
     {
         // If the GameManager exists
@@ -100,6 +141,14 @@ public class AIController : Controller
                 Debug.Log("Found Player");
             }
         }
+    }
+
+    private void FindHealth()
+    {
+        health = pawn.GetComponent<Health>();
+        if (health == null)
+            Debug.LogError("Couldn't find Health Component.");
+        lastKnownHealth = health.currentHealth;
     }
 
     protected bool IsHasTarget()
